@@ -3,9 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <title>D3 Accel</title>
+  <style>
+  body {
+    font: 10px sans-serif;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .x.axis path {
+    display: none;
+  }
+
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+  </style>
 </head>
 <body>
   <div id="chart"></div>
+  <div id="numbers"></div>
   <script src="d3.min.js"></script>
   <script src="index.js"></script>
 </body>

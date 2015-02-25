@@ -1,53 +1,97 @@
-var container = document.getElementById('chart');
-container.innerText = "We have loaded!";
+var container = document.getElementById('numbers'),
+    frequency = 100,
+    data = [];
 
-var data = [];
-// Get stream of data
-
-// FAKE DATA!
-// At an interval add a datapoint to the set
+// Get data stream, at an interval add datapoint to set
 setInterval(function() {
+
   // generate a random value between 0 and 10
   var accl = Math.random() * 10;
+
   data.push(accl)
-}, 100);
+}, frequency);
 
 // Initialize d3
 var chart = d3.select(container);
 
-// Get container set up
+// Set up container
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = window.innerWidth - margin.left - margin.right,
+    height = window.innerHeight - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .domain([0, 50])      // used for axis
+    .range([0, width]);   // range of values
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var y = d3.scale.linear()
+    .domain([0, 10])
+    .range([height, 0]);
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+//  create line function x(i) scales i to x-axis
+var line = d3.svg.line()
+    .x(function(d, i) { return x(i); })
+    .y(function(d, i) { return y(d); });
+
+var svg = d3.select("#chart")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("g")
+.attr("class", "x axis")
+.attr("transform", "translate(0," + height + ")")
+.call(xAxis);
+
+// add y axis
+svg.append("g")
+.attr("class", "y axis")
+.call(yAxis);
 
 
-// Adding data
 
-// Maximum data points to show: 50 past | data | future
+
 // ? Moving pointer for start of data set
 // ? When data set > 50, pointer moves upon each addition item
 // Get last 50 data points
-// array.slice(array.length-50)
 
 function drawChart () {
-  var numValues = 50;
-  var sliceData;
+  var numValues = 50,
+      sliceData;
+
+  // var divs = chart.selectAll("div"),
 
   if (data.length > numValues) {
     sliceData = data.slice(data.length - numValues);
+    d3.selectAll(".line").remove();
 
-    chart.selectAll("div").data(sliceData).text(function (d) {
-      return d;
-    });
+    // divs.data(sliceData)
+    // .text(function (d) { return d; });
 
   } else {
     sliceData = data;
-    chart.selectAll("div").data(sliceData).enter().append("div")
-        .text(function(d) {
-          return d;
-        });
+
+    // divs.data(sliceData)
+    // .enter()
+    // .append("div")
+    // .text(function(d) { return d; });
   }
 
-  console.log(sliceData[0]);
-
-
+  // draw graph
+  svg.append("path")
+  .datum(sliceData)
+  .attr("class", "line")
+  .attr("d", line);
 }
-// Redraw the graph on an interval
-setInterval(drawChart, 500);
+
+// On interval redraw graph
+setInterval(drawChart, frequency);
