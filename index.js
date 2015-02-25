@@ -25,20 +25,29 @@ var chart = d3.select(container);
 // ? When data set > 50, pointer moves upon each addition item
 // Get last 50 data points
 // array.slice(array.length-50)
-var sliceData;
-function drawChart () {
 
-  if (data.length > 50) {
-    sliceData = data.slice(data.length - 50);
+function drawChart () {
+  var numValues = 50;
+  var sliceData;
+
+  if (data.length > numValues) {
+    sliceData = data.slice(data.length - numValues);
+
+    chart.selectAll("div").data(sliceData).text(function (d) {
+      return d;
+    });
 
   } else {
     sliceData = data;
+    chart.selectAll("div").data(sliceData).enter().append("div")
+        .text(function(d) {
+          return d;
+        });
   }
 
-  chart.selectAll("div").data(sliceData).enter().append("div")
-      .text(function(d) {
-        return d;
-      });
+  console.log(sliceData[0]);
+
+
 }
 // Redraw the graph on an interval
 setInterval(drawChart, 500);
