@@ -14,13 +14,13 @@ function startTracking () {
 startTracking();
 
 // Set up container
-function setUpGraph () {
+function setUpGraph (spec) {
   var margin = {top: 20, right: 20, bottom: 30, left: 50},
       width = window.innerWidth - margin.left - margin.right,
       height = window.innerHeight - margin.top - margin.bottom;
 
   var x = d3.scale.linear()
-      .domain([0, 50])      // used for axis
+      .domain([0, spec.nDataPoints])      // used for axis
       .range([0, width]);   // range of values
 
   var xAxis = d3.svg.axis()
@@ -28,7 +28,7 @@ function setUpGraph () {
       .orient("bottom");
 
   var y = d3.scale.linear()
-      .domain([0, 10])
+      .domain([spec.minY, spec.maxY])
       .range([height, 0]);
 
   var yAxis = d3.svg.axis()
@@ -58,7 +58,12 @@ function setUpGraph () {
   .attr("class", "y axis")
   .call(yAxis);
 }
-setUpGraph();
+
+setUpGraph({
+  nDataPoints: 50,
+  minY: 0,
+  maxY: 10
+});
 
 // TODO: instead of redrawing all points each update, shift points left & append
 function drawChart () {
